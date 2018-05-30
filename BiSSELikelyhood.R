@@ -10,17 +10,29 @@ biSSE.likelyhood <- function(b0, b1, d0, d1, q)
   # D_n1(t) : The likelyhood that an extant species has the character state 1 at time t
   # Starting state: if tip has state 1 D_n1(0) = 1 D_n0(0) = 0
   #                 if tip has state 0 D_n1(0) = 0 D_n0(0) = 1
+  # E_0(t) : The likelyhood that a species goes extinct at time t while in state 0
   # The likelyhood that something stays at state 0 on a branch between time t and
   # time t + small_t and does not go extinct
   # D_n0(t+small_t) = p(did not go extinct)
-  #                   * ( p(No state change and no speciation)
-  #                   + p(State change and no speciation)
-  #                   + p(No state change and speication then extinction)
-  #                   + p(No state change and speication then extinction))
+  #                   * ( 
+  #                         p(No state change and no speciation)
+  #                       + p(State change and no speciation)
+  #                       + p(No state change and speication then extinction)
+  #                       + p(No state change and speication then extinction)
+  #                     )
   # We don't include p(state change and speciation then extinction) because small_t is too
   # small for the probability of both occuring to be significant.
   # Any speciation events have to be followed by extinction because it would mean a branch
   # that is not observed in the given tree. We include speciation then extinction twice as
   # extinction could have ouccured in either of the two decendants from a speciation.
   # D_n0(t+small_t) = (1 - d0*small_t)
+  #                   * ( 
+  #                         (1 -  q[0,1]*small_t) * (1 - b0*small_t) * D_n0(t)
+  #                       + q[0,1] * small_t * (1 - b0*small_t) * D_n1(t)
+  #                       + (1 -  q[0,1]*small_t) * b0 * small_t * E_0(t) * D_n0(t)
+  #                       + (1 -  q[0,1]*small_t) * b0 * small_t * E_0(t) * D_n0(t) 
+  #                     )
+  # Because terms of order small_t^2 are negligably small we can drop them, giving:
+  # D_n0(t+small_t) = (1 - (b0 + d0 + q[0,1])*small_t) * D_n0(t)
+  # 
 }
