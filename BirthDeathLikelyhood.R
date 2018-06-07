@@ -4,6 +4,7 @@ finches <- read.nexus("http://www.r-phylo.org/w/images/0/02/Geospiza.nex")
 ## Birth death model likelyhood function
 # Equation from Nee et al 1994 The reconstructed evolutionary process (model 21)
 # Takes a birth rate (brate), a death rate (drate), and an object of class phylo 
+# Outputs the likelyhood of the tree with the given parameters under the birth death model
 bd.likelyhood.function = function(brate, drate, phy)
 {
   N = length(phy$tip.label) # Number of lineages
@@ -42,7 +43,10 @@ bd.likelyhood.function = function(brate, drate, phy)
   return(likelyhood)
 }
 
-# As per bd.likelyhood.function but calculated with and outputs log likelyhood
+## Birth death model likelyhood function
+# Equation is the log form of model 21 from Nee et al 1994 "The reconstructed evolutionary process"
+# Takes a birth rate (brate), a death rate (drate), and an object of class phylo 
+# Outputs the log likelyhood of the tree with the given parameters under the birth death model
 bd.log.likelyhood.function <- function(brate, drate, phy)
 {
   N = length(phy$tip.label) # Number of lineages
@@ -62,5 +66,28 @@ bd.log.likelyhood.function <- function(brate, drate, phy)
   return(loglikelyhood)
 }
 
-optim(c(2.5,2.25), function(p) bd.log.likelyhood.function(p[1],p[2],finches),
+# Test the log likelihood matches the output of the function birthdeath() in the package ape 
+# Birth death finds the birthrate and deathrate via maximum likelyhood so we will use optim
+# on my function to find the birthrate and the death rate that produce the highest log likelihood
+my_max_like_bd <- optim(c(2.5,2.25), function(p) bd.log.likelyhood.function(p[1],p[2],finches),
       lower=c(0,0), control = list(fnscale=-1))
+
+print(my_max_like_bd)
+cat("Maximum Log likelihood found by my function: ", my_max_like_bd$value, "\n")
+cat("Birth Rate: ", my_max_like_bd$par[1], "\tDeath Rate: ", my_max_like_bd$par[2], "\n")
+
+# Check ape birth death maximum likelihood and parameters
+ape_max_like_bd <- birthdeath(phy = finches)
+print(ape_max_like_bd)
+
+# ape birthdeath objects only store the d / b and the b - d so to compare we will have to do some
+# maths
+cat("My max likelyhood birth death model:\nd / b = ", my_max_like_bd$par[2], " / " , my_max_like_bd$par[1],
+    " = ", my_max_like_bd$par[2] / my_max_like_bd$par[1], "\nb - d = ", my_max_like_bd$par[1], " - ", 
+    my_max_like_bd$par[2], " = ", my_max_like_bd$par[1] - my_max_like_bd$par[2], "\n")
+cat("APE max likelyhood birth death model:\n")
+print(ape_max_like_bd$para)
+
+
+
+
