@@ -4,7 +4,7 @@ finches <- read.nexus("http://www.r-phylo.org/w/images/0/02/Geospiza.nex")
 ## Birth death model likelyhood function
 # Equation from Nee et al 1994 The reconstructed evolutionary process (model 21)
 # Takes a birth rate (brate), a death rate (drate), and an object of class phylo 
-# Outputs the likelyhood of the tree with the given parameters under the birth death model
+# Outputs the likelyhood of the parameters under the birth death model given the tree
 bd.likelyhood.function = function(brate, drate, phy)
 {
   N = length(phy$tip.label) # Number of lineages
@@ -27,9 +27,9 @@ bd.likelyhood.function = function(brate, drate, phy)
   # within time t
   # u_t = (brate*(1-exp(-r*t)))/(brate - drate*exp(-r*t))
   
-  # So the likelyhood of a tree with exant tips is the likelyhood that each of the lineages were born 
-  # when the tree says they were born times the likelyhood that each lineage did not give birth to 
-  # extra lineages times the likelyhood that the first 2 lineages are extant
+  # So the likelyhood of the model given a tree with exant tips is the likelyhood that each of the 
+  # lineages were born when the tree says they were born times the likelyhood that each lineage did 
+  # not give birth to extra lineages times the likelyhood that the first 2 lineages are extant
   
   # Using algebra this works out to:
   # likelyhood = (N-1)!*r^(N-2)*exp(r*sum(t[3:N]))*(1-a)^N*prod(1/(exp(r*t[2:N])-a)**2)
@@ -46,7 +46,7 @@ bd.likelyhood.function = function(brate, drate, phy)
 ## Birth death model likelyhood function
 # Equation is the log form of model 21 from Nee et al 1994 "The reconstructed evolutionary process"
 # Takes a birth rate (brate), a death rate (drate), and an object of class phylo 
-# Outputs the log likelyhood of the tree with the given parameters under the birth death model
+# Outputs the log likelyhood of the given parameters under the birth death model given the tree
 bd.log.likelyhood.function <- function(brate, drate, phy)
 {
   N = length(phy$tip.label) # Number of lineages
