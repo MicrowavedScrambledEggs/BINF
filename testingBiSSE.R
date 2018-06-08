@@ -35,7 +35,7 @@ qrate1 <- 0.3
 qrate2 <- 0.2
 
 # Single birthrate, no death rate, no state transition 
-yule <- compareBiSSEFunctions(brate1, brate1,0,0,0,0,tr,endStates)
+yuleBiSSE <- compareBiSSEFunctions(brate1, brate1,0,0,0,0,tr,endStates)
 
 # Single birthrate, single death rate, no state transition 
 birthdeath <- compareBiSSEFunctions(brate1, brate1, drate1, drate1, 0, 0, 
