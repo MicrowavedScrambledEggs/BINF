@@ -87,6 +87,9 @@ biSSE.likelyhood <- function(b0, b1, u0, u1, q01, q10, phy, tipstates,
   # The same can be done for E_1. With the four coupled differential equations solutions can be
   # found from numberical integration
   
+  # If any birth rates are smaller than their associated death rate
+  if(b0 < u0 & b1 < u1) return(log(1e-300)) # return a really small number
+  
   parms = c(b0, b1, u0, u1, q01, q10)
   names(parms) = c("b0", "b1", "u0", "u1", "q01", "q10")
   
@@ -225,7 +228,13 @@ biSSE.likelyhood <- function(b0, b1, u0, u1, q01, q10, phy, tipstates,
   # likelyhood of the parameters given the tree and states assuming that it's a 50%/50% prob
   # that the root was either state
   lazy_likely <- mean(E_D_likelyhood[ancestor, 3:4])
+  if(lazy_likely == 0) {
+    return(log(1e-300))
+  }
   log_lazy_likely <- log(lazy_likely)
+  if(!is.finite(log_lazy_likely)){
+    print("Oh noooooooeeee!")
+  }
   if(output.branches){
     attributes(log_lazy_likely) <- list(init = t(E_D_init), base = t(E_D_base))
   }
