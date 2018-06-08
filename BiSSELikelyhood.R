@@ -206,7 +206,7 @@ biSSE.likelyhood <- function(b0, b1, u0, u1, q01, q10, phy, tipstates,
     if(output.branches)
     {
       E_D_base[left_tip_node,] <- left_likely[nrow(left_likely), 2:5]
-      E_D_base[right_tip_node,] <- left_likely[nrow(left_likely), 2:5]
+      E_D_base[right_tip_node,] <- right_likely[nrow(right_likely), 2:5]
       
       # relative probabilities of each state on each branch at the root facing end
       rel_Left_root <- D_Left_root / sum(D_Left_root)
