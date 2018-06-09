@@ -62,12 +62,11 @@ names(states.075) <- names(states)
 # Test
 testBisse <- biSSE.likelyhood(0.4,0.3,0.2,0.1,0.07,0.04, shore.bird, states.075, 
                  output.branches = TRUE)
-prefunc <- make.bisse(shore.bird, states.075)
 
 # every parameter different
 optim_ve <- optim(c(0.04,0.03,0.02,0.01,0.07,0.04), control = list(fnscale=-1),
                   method=c("L-BFGS-B"), lower = c(0.000001,0.000001,0,0,0,0),
-                  upper = c(10,10,10,10,10,10),
+                  upper = c(1,1,1,1,1,1),
                   fn = function(x) biSSE.likelyhood(x[1],x[2],x[3],x[4],x[5],x[6],
                                                     shore.bird, states.075))
 # Single death and transition rates
@@ -87,3 +86,14 @@ optim_t <- optim(c(0.04,0.03,0.02,0.01,0.07), control = list(fnscale=-1),
                  upper = c(1,1,1,1,1),
                   fn = function(x) biSSE.likelyhood(x[1],x[2],x[3],x[4],x[5],x[5],
                                                     shore.bird, states.075))
+# No death
+optim_nd <- optim(c(0.04,0.03,0.07,0.04), control = list(fnscale=-1), method=c("L-BFGS-B"), 
+                 lower = c(0.000001,0,0), upper = c(1,1,1),
+                 fn = function(x) biSSE.likelyhood(x[1],x[2],0,0,x[3],x[4],
+                                                   shore.bird, states.075))
+# Single death rate
+optim_sd <- optim(c(0.04,0.03,0.02,0.01,0.07), control = list(fnscale=-1),
+                 method=c("L-BFGS-B"), lower = c(0.000001,0.000001,0,0,0),
+                 upper = c(1,1,1,1,1),
+                 fn = function(x) biSSE.likelyhood(x[1],x[2],x[3],x[3],x[4],x[5],
+                                                   shore.bird, states.075))
